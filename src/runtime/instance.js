@@ -416,9 +416,11 @@ export default function (parentClass) {
         scaleX: this.properties[3],
         scaleY: this.properties[4],
       });
+      this._mesh3DRotation = this.instance._mesh3DRotation;
     }
 
     _postCreate() {
+      debugger;
       this._setupMeshRotation();
     }
 

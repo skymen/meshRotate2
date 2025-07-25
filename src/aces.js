@@ -11,7 +11,7 @@ action(
     deprecated: false,
     isAsync: false,
     listName: "Set Rotation",
-    displayText: "Set rotation to X: {0}, Y: {1}, Z: {2}",
+    displayText: "{my}: Set rotation to X: {0}, Y: {1}, Z: {2}",
     description: "Set the 3D rotation of the object using Euler angles",
     params: [
       {
@@ -38,6 +38,7 @@ action(
     ],
   },
   function (rotationX, rotationY, rotationZ) {
+    debugger;
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setRotation(rotationX, rotationY, rotationZ);
     }
@@ -53,7 +54,7 @@ action(
     isAsync: false,
     listName: "Set Rotation From Vectors",
     displayText:
-      "Set rotation from up vector ({0},{1},{2}) and forward vector ({3},{4},{5})",
+      "{my}: Set rotation from up vector ({0},{1},{2}) and forward vector ({3},{4},{5})",
     description:
       "Set the 3D rotation of the object from up and forward vectors",
     params: [
@@ -123,7 +124,7 @@ action(
     deprecated: false,
     isAsync: false,
     listName: "Set Scale",
-    displayText: "Set scale to X: {0}, Y: {1}",
+    displayText: "{my}: Set scale to X: {0}, Y: {1}",
     description: "Set the 3D scale of the object",
     params: [
       {
@@ -157,7 +158,7 @@ action(
     deprecated: false,
     isAsync: false,
     listName: "Set Mesh Size",
-    displayText: "Set mesh size to {0}x{1}",
+    displayText: "{my}: Set mesh size to {0}x{1}",
     description: "Set the number of mesh points for the object",
     params: [
       {
@@ -191,7 +192,7 @@ action(
     deprecated: false,
     isAsync: false,
     listName: "Set Original Z Elevation",
-    displayText: "Set original Z elevation to {0}",
+    displayText: "{my}: Set original Z elevation to {0}",
     description: "Set the original Z elevation without affecting rotation",
     params: [
       {
