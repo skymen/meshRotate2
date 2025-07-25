@@ -1,117 +1,165 @@
 {
   "languageTag": "en-US",
-  "fileDescription": "Strings for sample_addon.",
+  "fileDescription": "Strings for mesh3d_rotate_enhanced.",
   "text": {
-    "plugins": {
-      "sample_addon": {
-        "name": "Sample Addon",
-        "description": "Description",
+    "behaviors": {
+      "mesh3d_rotate_enhanced": {
+        "name": "Mesh 3D Rotate Enhanced",
+        "description": "Enhanced 3D mesh rotation system with direct WorldInfo override",
         "help-url": "https://www.construct.net",
         "aceCategories": {
-          "Aces_Files_In_Category_Folder": "Aces_Files_In_Category_Folder",
-          "Ace_Folders_In_Category_Folder": "Ace_Folders_In_Category_Folder",
-          "Aces_In_Single_File": "Aces_In_Single_File"
+          "Mesh3DRotate": "Mesh3DRotate"
         },
-        "properties": {},
+        "properties": {
+          "rotation_x": {
+            "name": "Rotation X",
+            "desc": "X-axis rotation in degrees"
+          },
+          "rotation_y": {
+            "name": "Rotation Y",
+            "desc": "Y-axis rotation in degrees"
+          },
+          "rotation_z": {
+            "name": "Rotation Z",
+            "desc": "Z-axis rotation in degrees"
+          },
+          "scale_x": {
+            "name": "Scale X",
+            "desc": "X-axis scale multiplier"
+          },
+          "scale_y": {
+            "name": "Scale Y",
+            "desc": "Y-axis scale multiplier"
+          }
+        },
         "actions": {
-          "Action": {
-            "list-name": "Sample Action",
-            "display-text": "Sample Action {0}",
-            "description": "This is a sample action",
+          "SetMeshSize": {
+            "list-name": "Set Mesh Size",
+            "display-text": "Set mesh size to {0}x{1}",
+            "description": "Set the number of mesh points for the object",
             "params": {
-              "param1": {
-                "name": "Param1",
-                "desc": "This is a sample param"
+              "width": {
+                "name": "Width",
+                "desc": "Number of mesh points horizontally"
+              },
+              "height": {
+                "name": "Height",
+                "desc": "Number of mesh points vertically"
               }
             }
           },
-          "AsyncAction": {
-            "list-name": "Sample Action Async",
-            "display-text": "Sample Action Async",
-            "description": "This is a sample action",
-            "params": {}
-          },
-          "ActionCombo": {
-            "list-name": "Sample Action Combo",
-            "display-text": "Sample Action Combo {0}",
-            "description": "This is a sample action",
+          "SetOriginalZElevation": {
+            "list-name": "Set Original Z Elevation",
+            "display-text": "Set original Z elevation to {0}",
+            "description": "Set the original Z elevation without affecting rotation",
             "params": {
-              "param1": {
-                "name": "Param1",
-                "desc": "This is a sample param",
-                "items": {
-                  "test": "test",
-                  "test2": "test2"
-                }
+              "zElevation": {
+                "name": "Z Elevation",
+                "desc": "Original Z elevation value"
               }
             }
           },
-          "SampleAction": {
-            "list-name": "Sample Action",
-            "display-text": "Sample Action {0}",
-            "description": "This is a sample action",
+          "SetRotation": {
+            "list-name": "Set Rotation",
+            "display-text": "Set rotation to X: {0}, Y: {1}, Z: {2}",
+            "description": "Set the 3D rotation of the object using Euler angles",
             "params": {
-              "param1": {
-                "name": "Param1",
-                "desc": "This is a sample param"
+              "rotationX": {
+                "name": "Rotation X",
+                "desc": "X-axis rotation in degrees"
+              },
+              "rotationY": {
+                "name": "Rotation Y",
+                "desc": "Y-axis rotation in degrees"
+              },
+              "rotationZ": {
+                "name": "Rotation Z",
+                "desc": "Z-axis rotation in degrees"
+              }
+            }
+          },
+          "SetRotationFromVectors": {
+            "list-name": "Set Rotation From Vectors",
+            "display-text": "Set rotation from up vector ({0},{1},{2}) and forward vector ({3},{4},{5})",
+            "description": "Set the 3D rotation of the object from up and forward vectors",
+            "params": {
+              "upX": {
+                "name": "Up X",
+                "desc": "Up vector X component"
+              },
+              "upY": {
+                "name": "Up Y",
+                "desc": "Up vector Y component"
+              },
+              "upZ": {
+                "name": "Up Z",
+                "desc": "Up vector Z component"
+              },
+              "forwardX": {
+                "name": "Forward X",
+                "desc": "Forward vector X component"
+              },
+              "forwardY": {
+                "name": "Forward Y",
+                "desc": "Forward vector Y component"
+              },
+              "forwardZ": {
+                "name": "Forward Z",
+                "desc": "Forward vector Z component"
+              }
+            }
+          },
+          "SetScale": {
+            "list-name": "Set Scale",
+            "display-text": "Set scale to X: {0}, Y: {1}",
+            "description": "Set the 3D scale of the object",
+            "params": {
+              "scaleX": {
+                "name": "Scale X",
+                "desc": "X-axis scale multiplier"
+              },
+              "scaleY": {
+                "name": "Scale Y",
+                "desc": "Y-axis scale multiplier"
               }
             }
           }
         },
-        "conditions": {
-          "Condition": {
-            "list-name": "Sample Condition",
-            "display-text": "Sample Condition {0}",
-            "description": "This is a sample condition",
-            "params": {
-              "param1": {
-                "name": "Param1",
-                "desc": "This is a sample param"
-              }
-            }
-          },
-          "Trigger": {
-            "list-name": "Sample Trigger",
-            "display-text": "Sample Trigger",
-            "description": "This is a sample trigger",
-            "params": {}
-          },
-          "ConditionCombo": {
-            "list-name": "Sample Condition",
-            "display-text": "Sample Condition {0}",
-            "description": "This is a sample condition",
-            "params": {
-              "param1": {
-                "name": "Param1",
-                "desc": "This is a sample param",
-                "items": {
-                  "TRUE": "True",
-                  "FALSE": "False"
-                }
-              }
-            }
-          },
-          "SampleCondition": {
-            "list-name": "Sample Condition",
-            "display-text": "Sample Condition",
-            "description": "This is a sample condition",
-            "params": {}
-          }
-        },
+        "conditions": {},
         "expressions": {
-          "Expression": {
-            "translated-name": "Expression",
-            "description": "Sample Expression",
+          "MeshZOffset": {
+            "translated-name": "MeshZOffset",
+            "description": "Get the current mesh Z offset",
             "params": {}
           },
-          "Expression2": {
-            "translated-name": "Expression2",
-            "description": "Sample Expression",
+          "OriginalZElevation": {
+            "translated-name": "OriginalZElevation",
+            "description": "Get the original Z elevation value",
             "params": {}
           },
-          "SampleExpression": {
-            "translated-name": "SampleExpression",
-            "description": "This is a sample expression",
+          "RotationX": {
+            "translated-name": "RotationX",
+            "description": "Get the current X rotation in degrees",
+            "params": {}
+          },
+          "RotationY": {
+            "translated-name": "RotationY",
+            "description": "Get the current Y rotation in degrees",
+            "params": {}
+          },
+          "RotationZ": {
+            "translated-name": "RotationZ",
+            "description": "Get the current Z rotation in degrees",
+            "params": {}
+          },
+          "ScaleX": {
+            "translated-name": "ScaleX",
+            "description": "Get the current X scale multiplier",
+            "params": {}
+          },
+          "ScaleY": {
+            "translated-name": "ScaleY",
+            "description": "Get the current Y scale multiplier",
             "params": {}
           }
         }

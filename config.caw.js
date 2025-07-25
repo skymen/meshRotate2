@@ -5,16 +5,17 @@ import {
   PROPERTY_TYPE,
 } from "./template/enums.js";
 import _version from "./version.js";
-export const addonType = ADDON_TYPE.PLUGIN;
+export const addonType = ADDON_TYPE.BEHAVIOR;
 export const type = PLUGIN_TYPE.OBJECT;
-export const id = "sample_addon";
-export const name = "Sample Addon";
+export const id = "mesh3d_rotate_enhanced";
+export const name = "Mesh 3D Rotate Enhanced";
 export const version = _version;
 export const minConstructVersion = undefined;
 export const author = "skymen";
 export const website = "https://www.construct.net";
 export const documentation = "https://www.construct.net";
-export const description = "Description";
+export const description =
+  "Enhanced 3D mesh rotation system with direct WorldInfo override";
 export const category = ADDON_CATEGORY.GENERAL;
 
 export const hasDomside = false;
@@ -45,7 +46,7 @@ export const info = {
     GooglePlayServicesEnabled: false,
 
     // BEHAVIOR only
-    IsOnlyOneAllowed: false,
+    IsOnlyOneAllowed: true,
 
     // PLUGIN world only
     IsResizable: false,
@@ -73,40 +74,59 @@ export const info = {
 };
 
 export const properties = [
-  /*
   {
-    type: PROPERTY_TYPE.INTEGER,
-    id: "property_id",
+    type: PROPERTY_TYPE.FLOAT,
+    id: "rotation_x",
     options: {
       initialValue: 0,
-      interpolatable: false,
-
-      // minValue: 0, // omit to disable
-      // maxValue: 100, // omit to disable
-
-      // for type combo only
-      // items: [
-      //   {itemId1: "item name1" },
-      //   {itemId2: "item name2" },
-      // ],
-
-      // dragSpeedMultiplier: 1, // omit to disable
-
-      // for type object only
-      // allowedPluginIds: ["Sprite", "<world>"],
-
-      // for type link only
-      // linkCallback: function(instOrObj) {},
-      // linkText: "Link Text",
-      // callbackType:
-      //   "for-each-instance"
-      //   "once-for-type"
-
-      // for type info only
-      // infoCallback: function(inst) {},
+      interpolatable: true,
+      dragSpeedMultiplier: 1,
     },
-    name: "Property Name",
-    desc: "Property Description",
-  }
-  */
+    name: "Rotation X",
+    desc: "X-axis rotation in degrees",
+  },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "rotation_y",
+    options: {
+      initialValue: 0,
+      interpolatable: true,
+      dragSpeedMultiplier: 1,
+    },
+    name: "Rotation Y",
+    desc: "Y-axis rotation in degrees",
+  },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "rotation_z",
+    options: {
+      initialValue: 0,
+      interpolatable: true,
+      dragSpeedMultiplier: 1,
+    },
+    name: "Rotation Z",
+    desc: "Z-axis rotation in degrees",
+  },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "scale_x",
+    options: {
+      initialValue: 1,
+      interpolatable: true,
+      dragSpeedMultiplier: 0.1,
+    },
+    name: "Scale X",
+    desc: "X-axis scale multiplier",
+  },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "scale_y",
+    options: {
+      initialValue: 1,
+      interpolatable: true,
+      dragSpeedMultiplier: 0.1,
+    },
+    name: "Scale Y",
+    desc: "Y-axis scale multiplier",
+  },
 ];

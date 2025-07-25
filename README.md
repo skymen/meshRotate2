@@ -1,11 +1,11 @@
-<img src="./src/icon.svg?rand=8697" width="100" /><br>
-# Sample Addon
-<i>Description</i> <br>
-### Version 1.0.0.0
+<img src="./src/icon.svg" width="100" /><br>
+# Mesh 3D Rotate Enhanced
+<i>Enhanced 3D mesh rotation system with direct WorldInfo override</i> <br>
+### Version 1.0.0.1
 
-[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/ConstructFund/construct-addon-wizard-scaffold/releases/download/sample_addon-1.0.0.0.c3addon/sample_addon-1.0.0.0.c3addon)
+[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/skymen/meshRotate2/releases/download/mesh3d_rotate_enhanced-1.0.0.1.c3addon/mesh3d_rotate_enhanced-1.0.0.1.c3addon)
 <br>
-<sub> [See all releases](https://github.com/ConstructFund/construct-addon-wizard-scaffold/releases) </sub> <br>
+<sub> [See all releases](https://github.com/skymen/meshRotate2/releases) </sub> <br>
 
 ---
 <b><u>Author:</u></b> skymen <br>
@@ -35,37 +35,45 @@ npm run dev
 ```
 
 ## Examples Files
+| Description | Download |
+| --- | --- |
 
 ---
 ## Properties
 | Property Name | Description | Type |
 | --- | --- | --- |
+| Rotation X | X-axis rotation in degrees | float |
+| Rotation Y | Y-axis rotation in degrees | float |
+| Rotation Z | Z-axis rotation in degrees | float |
+| Scale X | X-axis scale multiplier | float |
+| Scale Y | Y-axis scale multiplier | float |
 
 
 ---
 ## Actions
 | Action | Description | Params
 | --- | --- | --- |
-| Sample Action | This is a sample action | Param1             *(string)* <br> |
-| Sample Action Async | This is a sample action |  |
-| Sample Action Combo | This is a sample action | Param1             *(combo)* <br> |
-| Sample Action | This is a sample action | Param1             *(string)* <br> |
+| Set Mesh Size | Set the number of mesh points for the object | Width             *(number)* <br>Height             *(number)* <br> |
+| Set Original Z Elevation | Set the original Z elevation without affecting rotation | Z Elevation             *(number)* <br> |
+| Set Rotation | Set the 3D rotation of the object using Euler angles | Rotation X             *(number)* <br>Rotation Y             *(number)* <br>Rotation Z             *(number)* <br> |
+| Set Rotation From Vectors | Set the 3D rotation of the object from up and forward vectors | Up X             *(number)* <br>Up Y             *(number)* <br>Up Z             *(number)* <br>Forward X             *(number)* <br>Forward Y             *(number)* <br>Forward Z             *(number)* <br> |
+| Set Scale | Set the 3D scale of the object | Scale X             *(number)* <br>Scale Y             *(number)* <br> |
 
 
 ---
 ## Conditions
 | Condition | Description | Params
 | --- | --- | --- |
-| Sample Condition | This is a sample condition | Param1 *(string)* <br> |
-| Sample Trigger | This is a sample trigger |  |
-| Sample Condition | This is a sample condition | Param1 *(combo)* <br> |
-| Sample Condition | This is a sample condition |  |
 
 
 ---
 ## Expressions
 | Expression | Description | Return Type | Params
 | --- | --- | --- | --- |
-| Expression | Sample Expression | number |  | 
-| Expression2 | Sample Expression | string |  | 
-| SampleExpression | This is a sample expression | string |  | 
+| MeshZOffset | Get the current mesh Z offset | number |  | 
+| OriginalZElevation | Get the original Z elevation value | number |  | 
+| RotationX | Get the current X rotation in degrees | number |  | 
+| RotationY | Get the current Y rotation in degrees | number |  | 
+| RotationZ | Get the current Z rotation in degrees | number |  | 
+| ScaleX | Get the current X scale multiplier | number |  | 
+| ScaleY | Get the current Y scale multiplier | number |  | 
