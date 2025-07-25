@@ -38,7 +38,6 @@ action(
     ],
   },
   function (rotationX, rotationY, rotationZ) {
-    debugger;
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setRotation(rotationX, rotationY, rotationZ);
     }

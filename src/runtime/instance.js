@@ -420,7 +420,6 @@ export default function (parentClass) {
     }
 
     _postCreate() {
-      debugger;
       this._setupMeshRotation();
     }
 
