@@ -401,26 +401,25 @@ export default function (parentClass) {
   return class extends parentClass {
     constructor() {
       super();
-      const properties = this._getInitProperties();
-      if (properties) {
-        // Initialize the mesh rotation system
-        this._mesh3DRotation = null;
-        this._setupMeshRotation();
-      }
+      this.properties = this._getInitProperties();
+      this._mesh3DRotation = null;
     }
 
     _setupMeshRotation() {
       // Get properties
-      const props = this._getInitProperties();
 
       // Setup mesh rotation with initial values
       setupMesh3DRotation(this.instance, {
-        rotationX: props[0],
-        rotationY: props[1],
-        rotationZ: props[2],
-        scaleX: props[3],
-        scaleY: props[4],
+        rotationX: this.properties[0],
+        rotationY: this.properties[1],
+        rotationZ: this.properties[2],
+        scaleX: this.properties[3],
+        scaleY: this.properties[4],
       });
+    }
+
+    _postCreate() {
+      this._setupMeshRotation();
     }
 
     _trigger(method) {
