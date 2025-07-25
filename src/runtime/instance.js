@@ -33,11 +33,7 @@ class Mesh3DRotateSystem {
   }
 
   set rotationZ(value) {
-    if (this.instance.angleDegrees !== undefined) {
-      this.instance.angleDegrees = value;
-    } else {
-      this.worldInfo.SetAngle((value * Math.PI) / 180);
-    }
+    this.instance.angleDegrees = value;
   }
 
   setupMethodOverrides() {
@@ -172,12 +168,7 @@ class Mesh3DRotateSystem {
 
     // Apply rotations in XYZ order (Z last)
     for (let corner of corners) {
-      let point = this.rotatePoint(
-        corner,
-        this.rotationX,
-        this.rotationY,
-        this.rotationZ
-      );
+      let point = this.rotatePoint(corner, this.rotationX, this.rotationY, 0);
       rotatedCorners.push(point);
       minZ = Math.min(minZ, point[2]);
     }
