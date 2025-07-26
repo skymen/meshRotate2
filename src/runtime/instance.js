@@ -126,6 +126,7 @@ class Mesh3DRotateSystem {
     this.rotationX = x;
     this.rotationY = y;
     this.rotationZ = z;
+    this.lastForward = this.calculateRotationNormal();
     this.updateRotation();
   }
 
@@ -193,7 +194,7 @@ class Mesh3DRotateSystem {
 
       // Apply offset in the direction of the rotation normal
       if (this.offset !== 0) {
-        const normal = this.calculateRotationNormal();
+        const normal = this.lastForward;
         point[0] += normal[0] * this.offset;
         point[1] += normal[1] * this.offset;
         point[2] += normal[2] * this.offset;
@@ -297,6 +298,8 @@ class Mesh3DRotateSystem {
       forwardZ / forwardLen,
     ];
 
+    this.lastForward = forward;
+
     // Calculate right vector
     const right = [
       forward[1] * up[2] - forward[2] * up[1],
@@ -309,9 +312,10 @@ class Mesh3DRotateSystem {
     const rotX = Math.atan2(forward[1], forward[2]);
     const rotZ = Math.atan2(right[0], up[0]);
 
+    this.rotationZ = 0;
     this.rotationX = (rotX * 180) / Math.PI;
     this.rotationY = (rotY * 180) / Math.PI;
-    this.rotationZ = (rotZ * 180) / Math.PI;
+    this.rotationZExtra = (rotZ * 180) / Math.PI;
 
     this.updateRotation();
   }
