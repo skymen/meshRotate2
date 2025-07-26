@@ -11,6 +11,7 @@ class Mesh3DRotateSystem {
     this.scaleY = 1;
     this.offset = 0;
     this.rotationZExtra = 0;
+    this.lastForward = [0, 0, 1];
 
     // Get the WorldInfo object
     this.worldInfo = this.instance.getWorldInfo
