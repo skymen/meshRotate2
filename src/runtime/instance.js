@@ -9,6 +9,8 @@ class Mesh3DRotateSystem {
     this.rotationY = 0;
     this.scaleX = 1;
     this.scaleY = 1;
+    this.offset = 0;
+    this.rotationZExtra = 0;
 
     // Get the WorldInfo object
     this.worldInfo = this.instance.getWorldInfo
@@ -133,6 +135,16 @@ class Mesh3DRotateSystem {
     this.updateRotation();
   }
 
+  setOffset(value) {
+    this.offset = value;
+    this.updateRotation();
+  }
+
+  setRotationZExtra(value) {
+    this.rotationZExtra = value;
+    this.updateRotation();
+  }
+
   setOriginalZElevation(value) {
     this._originalZElevation = value;
     this.updateRotation();
@@ -166,9 +178,27 @@ class Mesh3DRotateSystem {
     let minZ = 0;
     const rotatedCorners = [];
 
-    // Apply rotations in XYZ order (Z last)
+    // Apply rotations with extra Z rotation first, then XYZ order
     for (let corner of corners) {
-      let point = this.rotatePoint(corner, this.rotationX, this.rotationY, 0);
+      // First apply extra Z rotation
+      let point = this.rotatePoint(corner, 0, 0, this.rotationZExtra);
+
+      // Then apply main rotations in XYZ order (Z last)
+      point = this.rotatePoint(
+        point,
+        this.rotationX,
+        this.rotationY,
+        0 // this is already handled by C3 using its internal angle value
+      );
+
+      // Apply offset in the direction of the rotation normal
+      if (this.offset !== 0) {
+        const normal = this.calculateRotationNormal();
+        point[0] += normal[0] * this.offset;
+        point[1] += normal[1] * this.offset;
+        point[2] += normal[2] * this.offset;
+      }
+
       rotatedCorners.push(point);
       minZ = Math.min(minZ, point[2]);
     }
@@ -233,6 +263,26 @@ class Mesh3DRotateSystem {
     return [newX, newY, z];
   }
 
+  // Calculate the normal vector of the rotated surface
+  calculateRotationNormal() {
+    // Start with the original normal (0, 0, 1) for a flat surface
+    const originalNormal = [0, 0, 1];
+
+    // Apply the same rotations as the mesh points
+    // First apply extra Z rotation
+    let normal = this.rotatePoint(originalNormal, 0, 0, this.rotationZExtra);
+
+    // Then apply main rotations in XYZ order
+    normal = this.rotatePoint(
+      normal,
+      this.rotationX,
+      this.rotationY,
+      this.rotationZ
+    );
+
+    return normal;
+  }
+
   setRotationFromVectors(upX, upY, upZ, forwardX, forwardY, forwardZ) {
     // Normalize vectors
     const upLen = Math.sqrt(upX * upX + upY * upY + upZ * upZ);
@@ -280,6 +330,12 @@ class Mesh3DRotateSystem {
   }
   getScaleY() {
     return this.scaleY;
+  }
+  getOffset() {
+    return this.offset;
+  }
+  getRotationZExtra() {
+    return this.rotationZExtra;
   }
   getMeshZOffset() {
     return this._meshZOffset;
@@ -345,6 +401,22 @@ export function setupMesh3DRotation(instance, options = {}) {
     };
   };
 
+  instance.setOffset3D = function (value) {
+    this._mesh3DRotation.setOffset(value);
+  };
+
+  instance.getOffset3D = function () {
+    return this._mesh3DRotation.getOffset();
+  };
+
+  instance.setRotationZExtra3D = function (value) {
+    this._mesh3DRotation.setRotationZExtra(value);
+  };
+
+  instance.getRotationZExtra3D = function () {
+    return this._mesh3DRotation.getRotationZExtra();
+  };
+
   // Add originalZElevation getter/setter to the instance
   Object.defineProperty(instance, "originalZElevation", {
     get() {
@@ -366,6 +438,10 @@ export function setupMesh3DRotation(instance, options = {}) {
       delete this.getRotation3D;
       delete this.setScale3D;
       delete this.getScale3D;
+      delete this.setOffset3D;
+      delete this.getOffset3D;
+      delete this.setRotationZExtra3D;
+      delete this.getRotationZExtra3D;
       delete this.originalZElevation;
       delete this.releaseMesh3D;
     }
@@ -383,6 +459,16 @@ export function setupMesh3DRotation(instance, options = {}) {
   // Apply initial scale if provided
   if (options.scaleX || options.scaleY) {
     rotationSystem.setScale(options.scaleX || 1, options.scaleY || 1);
+  }
+
+  // Apply initial offset if provided
+  if (options.offset !== undefined) {
+    rotationSystem.setOffset(options.offset);
+  }
+
+  // Apply initial extra Z rotation if provided
+  if (options.rotationZExtra !== undefined) {
+    rotationSystem.setRotationZExtra(options.rotationZExtra);
   }
 
   return rotationSystem;
@@ -406,6 +492,8 @@ export default function (parentClass) {
         rotationZ: this.properties[2],
         scaleX: this.properties[3],
         scaleY: this.properties[4],
+        offset: this.properties[5],
+        rotationZExtra: this.properties[6],
       });
       this._mesh3DRotation = this.instance._mesh3DRotation;
     }
@@ -473,6 +561,10 @@ export default function (parentClass) {
           : 0,
         scaleX: this._mesh3DRotation ? this._mesh3DRotation.getScaleX() : 1,
         scaleY: this._mesh3DRotation ? this._mesh3DRotation.getScaleY() : 1,
+        offset: this._mesh3DRotation ? this._mesh3DRotation.getOffset() : 0,
+        rotationZExtra: this._mesh3DRotation
+          ? this._mesh3DRotation.getRotationZExtra()
+          : 0,
       };
     }
 
@@ -485,6 +577,8 @@ export default function (parentClass) {
           o.rotationZ || 0
         );
         this._mesh3DRotation.setScale(o.scaleX || 1, o.scaleY || 1);
+        this._mesh3DRotation.setOffset(o.offset || 0);
+        this._mesh3DRotation.setRotationZExtra(o.rotationZExtra || 0);
       }
     }
   };

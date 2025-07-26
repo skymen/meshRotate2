@@ -210,6 +210,60 @@ action(
   }
 );
 
+action(
+  category,
+  "SetOffset",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Set Offset",
+    displayText: "{my}: Set offset to {0}",
+    description: "Set the offset in the direction of rotation normal",
+    params: [
+      {
+        id: "offset",
+        name: "Offset",
+        desc: "Offset value in the direction of rotation normal",
+        type: "number",
+        initialValue: "0",
+      },
+    ],
+  },
+  function (offset) {
+    if (this._mesh3DRotation) {
+      this._mesh3DRotation.setOffset(offset);
+    }
+  }
+);
+
+action(
+  category,
+  "SetRotationZExtra",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Set Rotation Z Extra",
+    displayText: "{my}: Set extra Z rotation to {0}",
+    description: "Set the additional Z-axis rotation applied first",
+    params: [
+      {
+        id: "rotationZExtra",
+        name: "Rotation Z Extra",
+        desc: "Additional Z-axis rotation in degrees",
+        type: "number",
+        initialValue: "0",
+      },
+    ],
+  },
+  function (rotationZExtra) {
+    if (this._mesh3DRotation) {
+      this._mesh3DRotation.setRotationZExtra(rotationZExtra);
+    }
+  }
+);
+
 // Expressions
 expression(
   category,
@@ -321,6 +375,38 @@ expression(
   },
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getMeshZOffset() : 0;
+  },
+  false
+);
+
+expression(
+  category,
+  "Offset",
+  {
+    highlight: false,
+    deprecated: false,
+    returnType: "number",
+    description: "Get the current offset value",
+    params: [],
+  },
+  function () {
+    return this._mesh3DRotation ? this._mesh3DRotation.getOffset() : 0;
+  },
+  false
+);
+
+expression(
+  category,
+  "RotationZExtra",
+  {
+    highlight: false,
+    deprecated: false,
+    returnType: "number",
+    description: "Get the current extra Z rotation value",
+    params: [],
+  },
+  function () {
+    return this._mesh3DRotation ? this._mesh3DRotation.getRotationZExtra() : 0;
   },
   false
 );

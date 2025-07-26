@@ -129,4 +129,26 @@ export const properties = [
     name: "Scale Y",
     desc: "Y-axis scale multiplier",
   },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "offset",
+    options: {
+      initialValue: 0,
+      interpolatable: true,
+      dragSpeedMultiplier: 1,
+    },
+    name: "Offset",
+    desc: "Offset in the direction of rotation normal",
+  },
+  {
+    type: PROPERTY_TYPE.FLOAT,
+    id: "rotation_z_extra",
+    options: {
+      initialValue: 0,
+      interpolatable: true,
+      dragSpeedMultiplier: 1,
+    },
+    name: "Rotation Z Extra",
+    desc: "Additional Z-axis rotation applied first (before main rotations)",
+  },
 ];

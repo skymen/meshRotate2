@@ -30,6 +30,14 @@
           "scale_y": {
             "name": "Scale Y",
             "desc": "Y-axis scale multiplier"
+          },
+          "offset": {
+            "name": "Offset",
+            "desc": "Offset in the direction of rotation normal"
+          },
+          "rotation_z_extra": {
+            "name": "Rotation Z Extra",
+            "desc": "Additional Z-axis rotation applied first (before main rotations)"
           }
         },
         "actions": {
@@ -45,6 +53,17 @@
               "height": {
                 "name": "Height",
                 "desc": "Number of mesh points vertically"
+              }
+            }
+          },
+          "SetOffset": {
+            "list-name": "Set Offset",
+            "display-text": "{my}: Set offset to {0}",
+            "description": "Set the offset in the direction of rotation normal",
+            "params": {
+              "offset": {
+                "name": "Offset",
+                "desc": "Offset value in the direction of rotation normal"
               }
             }
           },
@@ -109,6 +128,17 @@
               }
             }
           },
+          "SetRotationZExtra": {
+            "list-name": "Set Rotation Z Extra",
+            "display-text": "{my}: Set extra Z rotation to {0}",
+            "description": "Set the additional Z-axis rotation applied first",
+            "params": {
+              "rotationZExtra": {
+                "name": "Rotation Z Extra",
+                "desc": "Additional Z-axis rotation in degrees"
+              }
+            }
+          },
           "SetScale": {
             "list-name": "Set Scale",
             "display-text": "{my}: Set scale to X: {0}, Y: {1}",
@@ -132,6 +162,11 @@
             "description": "Get the current mesh Z offset",
             "params": {}
           },
+          "Offset": {
+            "translated-name": "Offset",
+            "description": "Get the current offset value",
+            "params": {}
+          },
           "OriginalZElevation": {
             "translated-name": "OriginalZElevation",
             "description": "Get the original Z elevation value",
@@ -150,6 +185,11 @@
           "RotationZ": {
             "translated-name": "RotationZ",
             "description": "Get the current Z rotation in degrees",
+            "params": {}
+          },
+          "RotationZExtra": {
+            "translated-name": "RotationZExtra",
+            "description": "Get the current extra Z rotation value",
             "params": {}
           },
           "ScaleX": {
