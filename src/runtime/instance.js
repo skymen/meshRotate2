@@ -314,9 +314,9 @@ class Mesh3DRotateSystem {
     const rotZ = Math.atan2(right[0], up[0]);
 
     this.rotationZ = 0;
-    this.rotationX = (rotX * 180) / Math.PI;
-    this.rotationY = (rotY * 180) / Math.PI;
-    this.rotationZExtra = (rotZ * 180) / Math.PI;
+    this.rotationX = -(rotX * 180) / Math.PI;
+    this.rotationY = -(rotY * 180) / Math.PI;
+    this.rotationZExtra = -(rotZ * 180) / Math.PI;
 
     this.updateRotation();
   }
