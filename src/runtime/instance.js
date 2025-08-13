@@ -303,19 +303,6 @@ class Mesh3DRotateSystem {
     // Store the forward vector
     this.lastForward = forwardVec;
 
-    if (
-      forwardVec[0] === upApprox[0] &&
-      forwardVec[1] === upApprox[1] &&
-      forwardVec[2] === upApprox[2]
-    ) {
-      this.rotationX = 0;
-      this.rotationY = 0;
-      this.rotationZ = 0;
-      this.rotationZExtra = 0;
-      this.updateRotation();
-      return;
-    }
-
     // Step 2: Right = forward × upApprox
     const right = [
       forwardVec[1] * upApprox[2] - forwardVec[2] * upApprox[1],
@@ -327,6 +314,15 @@ class Mesh3DRotateSystem {
     const rightLen = Math.sqrt(
       right[0] * right[0] + right[1] * right[1] + right[2] * right[2]
     );
+
+    if (rightLen === 0) {
+      this.rotationX = 0;
+      this.rotationY = 0;
+      this.rotationZ = 0;
+      this.rotationZExtra = 0;
+      this.updateRotation();
+      return;
+    }
     right[0] /= rightLen;
     right[1] /= rightLen;
     right[2] /= rightLen;
