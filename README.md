@@ -1,9 +1,9 @@
 <img src="./src/icon.svg" width="100" /><br>
 # Mesh 3D Rotate Enhanced
 <i>Enhanced 3D mesh rotation system with direct WorldInfo override</i> <br>
-### Version 1.0.0.10
+### Version 1.0.0.11
 
-[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/skymen/meshRotate2/releases/download/mesh3d_rotate_enhanced-1.0.0.10.c3addon/mesh3d_rotate_enhanced-1.0.0.10.c3addon)
+[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/skymen/meshRotate2/releases/download/mesh3d_rotate_enhanced-1.0.0.11.c3addon/mesh3d_rotate_enhanced-1.0.0.11.c3addon)
 <br>
 <sub> [See all releases](https://github.com/skymen/meshRotate2/releases) </sub> <br>
 

@@ -190,7 +190,7 @@ class Mesh3DRotateSystem {
         point,
         this.rotationX,
         this.rotationY,
-        0 // this is already handled by C3 using its internal angle value
+        this.rotationZ
       );
 
       // Apply offset in the direction of the rotation normal
@@ -200,6 +200,7 @@ class Mesh3DRotateSystem {
         point[1] += normal[1] * this.offset;
         point[2] += normal[2] * this.offset;
       }
+      point = this.rotatePoint(point, 0, 0, -this.rotationZ);
 
       rotatedCorners.push(point);
       minZ = Math.min(minZ, point[2]);
@@ -286,37 +287,89 @@ class Mesh3DRotateSystem {
   }
 
   setRotationFromVectors(upX, upY, upZ, forwardX, forwardY, forwardZ) {
-    // Normalize vectors
-    const upLen = Math.sqrt(upX * upX + upY * upY + upZ * upZ);
+    // Normalize input vectors
     const forwardLen = Math.sqrt(
       forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ
     );
+    const upLen = Math.sqrt(upX * upX + upY * upY + upZ * upZ);
 
-    const up = [upX / upLen, upY / upLen, upZ / upLen];
-    const forward = [
+    const forwardVec = [
       forwardX / forwardLen,
       forwardY / forwardLen,
       forwardZ / forwardLen,
     ];
+    const upApprox = [upX / upLen, upY / upLen, upZ / upLen];
 
-    this.lastForward = forward;
+    // Store the forward vector
+    this.lastForward = forwardVec;
 
-    // Calculate right vector
+    if (
+      forwardVec[0] === upApprox[0] &&
+      forwardVec[1] === upApprox[1] &&
+      forwardVec[2] === upApprox[2]
+    ) {
+      this.rotationX = 0;
+      this.rotationY = 0;
+      this.rotationZ = 0;
+      this.rotationZExtra = 0;
+      this.updateRotation();
+      return;
+    }
+
+    // Step 2: Right = forward × upApprox
     const right = [
-      forward[1] * up[2] - forward[2] * up[1],
-      forward[2] * up[0] - forward[0] * up[2],
-      forward[0] * up[1] - forward[1] * up[0],
+      forwardVec[1] * upApprox[2] - forwardVec[2] * upApprox[1],
+      forwardVec[2] * upApprox[0] - forwardVec[0] * upApprox[2],
+      forwardVec[0] * upApprox[1] - forwardVec[1] * upApprox[0],
     ];
 
-    // Convert to XYZ Euler angles
-    const rotY = Math.asin(-forward[0]);
-    const rotX = Math.atan2(forward[1], forward[2]);
-    const rotZ = Math.atan2(right[0], up[0]);
+    // Normalize right vector
+    const rightLen = Math.sqrt(
+      right[0] * right[0] + right[1] * right[1] + right[2] * right[2]
+    );
+    right[0] /= rightLen;
+    right[1] /= rightLen;
+    right[2] /= rightLen;
 
-    this.rotationZ = 0;
+    // Step 3: Up = right × forward (ensures perfect orthogonality)
+    const up = [
+      right[1] * forwardVec[2] - right[2] * forwardVec[1],
+      right[2] * forwardVec[0] - right[0] * forwardVec[2],
+      right[0] * forwardVec[1] - right[1] * forwardVec[0],
+    ];
+
+    // Build rotation matrix: [right, up, forward] as columns
+    // Assuming your coordinate system uses Y-up, Z-forward, X-right conventions
+    const matrix = [
+      [right[0], up[0], forwardVec[0]],
+      [right[1], up[1], forwardVec[1]],
+      [right[2], up[2], forwardVec[2]],
+    ];
+
+    // Extract Euler angles from rotation matrix (Z Y X order)
+    // For rotation order Z Y X, the matrix decomposition is:
+    // R = Rz(rotZ) * Ry(rotY) * Rx(rotX)
+
+    let rotY = Math.asin(-matrix[2][0]); // -sin(Y) = -(-sin(β))
+    rotY = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotY));
+
+    let rotX, rotZ;
+    if (Math.abs(Math.cos(rotY)) > 0.0001) {
+      // Normal case - no gimbal lock
+      rotX = Math.atan2(matrix[2][1], matrix[2][2]); // atan2(cos(Y)sin(X), cos(Y)cos(X))
+      rotZ = Math.atan2(matrix[1][0], matrix[0][0]); // atan2(sin(Z)cos(Y), cos(Z)cos(Y))
+    } else {
+      // Gimbal lock case (Y = ±90°)
+      rotX = Math.atan2(-matrix[0][1], matrix[1][1]);
+      rotZ = 0;
+    }
+
+    // Convert to degrees and apply to your object
+    // Since you use Z Y X ZExtra order, set the first three rotations
+    this.rotationZ = (rotZ * 180) / Math.PI;
+    this.rotationY = (rotY * 180) / Math.PI;
     this.rotationX = -(rotX * 180) / Math.PI;
-    this.rotationY = -(rotY * 180) / Math.PI;
-    this.rotationZExtra = -(rotZ * 180) / Math.PI;
+    this.rotationZExtra = 0; // Start with no extra Z rotation
 
     this.updateRotation();
   }
@@ -483,22 +536,19 @@ export default function (parentClass) {
   return class extends parentClass {
     constructor() {
       super();
-      this.properties = this._getInitProperties();
+      this.properties = this._getInitProperties() ?? [];
       this._mesh3DRotation = null;
     }
 
     _setupMeshRotation() {
-      // Get properties
-
-      // Setup mesh rotation with initial values
       setupMesh3DRotation(this.instance, {
-        rotationX: this.properties[0],
-        rotationY: this.properties[1],
-        rotationZ: this.properties[2],
-        scaleX: this.properties[3],
-        scaleY: this.properties[4],
-        offset: this.properties[5],
-        rotationZExtra: this.properties[6],
+        rotationX: this.properties[0] || 0,
+        rotationY: this.properties[1] || 0,
+        rotationZ: this.properties[2] || 0,
+        scaleX: this.properties[3] || 1,
+        scaleY: this.properties[4] || 1,
+        offset: this.properties[5] || 0.1,
+        rotationZExtra: this.properties[6] || 0,
       });
       this._mesh3DRotation = this.instance._mesh3DRotation;
     }
