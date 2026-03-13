@@ -3,7 +3,7 @@ import AddonTypeMap from "../../template/addonTypeMap.js";
 
 // Improved 3D Mesh Rotation System - Direct C3.WorldInfo Override
 class Mesh3DRotateSystem {
-  constructor(instance) {
+  constructor(instance, globalRuntime) {
     this.instance = instance;
     this.rotationX = 0;
     this.rotationY = 0;
@@ -14,11 +14,9 @@ class Mesh3DRotateSystem {
     this.lastForward = [0, 0, 1];
 
     // Get the WorldInfo object
-    this.worldInfo = this.instance.getWorldInfo
-      ? this.instance.getWorldInfo()
-      : globalThis.sdk_runtime
-          .GetInstanceByUID(this.instance.uid)
-          .GetWorldInfo();
+    this.worldInfo = globalRuntime
+      .GetInstanceByUID(this.instance.uid)
+      .GetWorldInfo();
 
     // Store original Z elevation and create custom property
     this._originalZElevation = this.worldInfo.GetZElevation();
@@ -42,7 +40,7 @@ class Mesh3DRotateSystem {
   setupMethodOverrides() {
     // Store original methods
     this._originalSetZElevation = this.worldInfo.SetZElevation.bind(
-      this.worldInfo
+      this.worldInfo,
     );
     this._originalSetWidth = this.worldInfo.SetWidth.bind(this.worldInfo);
     this._originalSetHeight = this.worldInfo.SetHeight.bind(this.worldInfo);
@@ -190,7 +188,7 @@ class Mesh3DRotateSystem {
         point,
         this.rotationX,
         this.rotationY,
-        this.rotationZ
+        this.rotationZ,
       );
 
       // Apply offset in the direction of the rotation normal
@@ -280,7 +278,7 @@ class Mesh3DRotateSystem {
       normal,
       this.rotationX,
       this.rotationY,
-      this.rotationZ
+      this.rotationZ,
     );
 
     return normal;
@@ -289,7 +287,7 @@ class Mesh3DRotateSystem {
   setRotationFromVectors(upX, upY, upZ, forwardX, forwardY, forwardZ) {
     // Normalize input vectors
     const forwardLen = Math.sqrt(
-      forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ
+      forwardX * forwardX + forwardY * forwardY + forwardZ * forwardZ,
     );
     const upLen = Math.sqrt(upX * upX + upY * upY + upZ * upZ);
 
@@ -312,7 +310,7 @@ class Mesh3DRotateSystem {
 
     // Normalize right vector
     const rightLen = Math.sqrt(
-      right[0] * right[0] + right[1] * right[1] + right[2] * right[2]
+      right[0] * right[0] + right[1] * right[1] + right[2] * right[2],
     );
 
     if (rightLen === 0) {
@@ -402,13 +400,13 @@ class Mesh3DRotateSystem {
  * @param {Object} options - Optional configuration
  * @returns {Mesh3DRotateSystem} The rotation system for further control
  */
-export function setupMesh3DRotation(instance, options = {}) {
+function setupMesh3DRotation(instance, globalRuntime, options = {}) {
   // Don't setup twice
   if (instance._mesh3DRotation) {
     return instance._mesh3DRotation;
   }
 
-  const rotationSystem = new Mesh3DRotateSystem(instance);
+  const rotationSystem = new Mesh3DRotateSystem(instance, globalRuntime);
 
   // Store reference on the instance
   instance._mesh3DRotation = rotationSystem;
@@ -424,7 +422,7 @@ export function setupMesh3DRotation(instance, options = {}) {
     upZ,
     forwardX,
     forwardY,
-    forwardZ
+    forwardZ,
   ) {
     this._mesh3DRotation.setRotationFromVectors(
       upX,
@@ -432,7 +430,7 @@ export function setupMesh3DRotation(instance, options = {}) {
       upZ,
       forwardX,
       forwardY,
-      forwardZ
+      forwardZ,
     );
   };
 
@@ -506,7 +504,7 @@ export function setupMesh3DRotation(instance, options = {}) {
     rotationSystem.setRotation(
       options.rotationX || 0,
       options.rotationY || 0,
-      options.rotationZ || 0
+      options.rotationZ || 0,
     );
   }
 
@@ -529,6 +527,18 @@ export function setupMesh3DRotation(instance, options = {}) {
 }
 
 export default function (parentClass) {
+  let globalRuntime = null;
+  if (self.C3.Plugins.Sprite.Instance) {
+    self.C3.Plugins.Sprite.Instance = class SpriteInstance extends (
+      self.C3.Plugins.Sprite.Instance
+    ) {
+      constructor(...args) {
+        super(...args);
+        globalRuntime = this._runtime;
+      }
+    };
+  }
+
   return class extends parentClass {
     constructor() {
       super();
@@ -537,7 +547,7 @@ export default function (parentClass) {
     }
 
     _setupMeshRotation() {
-      setupMesh3DRotation(this.instance, {
+      setupMesh3DRotation(this.instance, globalRuntime, {
         rotationX: this.properties[0] || 0,
         rotationY: this.properties[1] || 0,
         rotationZ: this.properties[2] || 0,
@@ -568,7 +578,7 @@ export default function (parentClass) {
     off(tag, callback) {
       if (this.events[tag]) {
         this.events[tag] = this.events[tag].filter(
-          (event) => event.callback !== callback
+          (event) => event.callback !== callback,
         );
       }
     }
@@ -625,7 +635,7 @@ export default function (parentClass) {
         this._mesh3DRotation.setRotation(
           o.rotationX || 0,
           o.rotationY || 0,
-          o.rotationZ || 0
+          o.rotationZ || 0,
         );
         this._mesh3DRotation.setScale(o.scaleX || 1, o.scaleY || 1);
         this._mesh3DRotation.setOffset(o.offset || 0);
