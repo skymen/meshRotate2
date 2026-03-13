@@ -3,5 +3,10 @@
     "added": "",
     "changed": "",
     "fixed": "Removed dependency on global runtime by using small hack"
+  },
+  "1.0.1.1": {
+    "added": "",
+    "changed": "",
+    "fixed": "Updated GetZElevation and SetZElevation calls to use new GetZ and SetZ"
   }
 }
