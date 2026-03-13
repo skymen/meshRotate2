@@ -19,7 +19,7 @@ class Mesh3DRotateSystem {
       .GetWorldInfo();
 
     // Store original Z elevation and create custom property
-    this._originalZElevation = this.worldInfo.GetZElevation();
+    this._originalZElevation = this.worldInfo.GetZ();
     this._meshZOffset = 0;
 
     // Override WorldInfo methods
@@ -39,9 +39,7 @@ class Mesh3DRotateSystem {
 
   setupMethodOverrides() {
     // Store original methods
-    this._originalSetZElevation = this.worldInfo.SetZElevation.bind(
-      this.worldInfo,
-    );
+    this._originalSetZ = this.worldInfo.SetZ.bind(this.worldInfo);
     this._originalSetWidth = this.worldInfo.SetWidth.bind(this.worldInfo);
     this._originalSetHeight = this.worldInfo.SetHeight.bind(this.worldInfo);
     this._originalSetAngle = this.worldInfo.SetAngle.bind(this.worldInfo);
@@ -49,8 +47,8 @@ class Mesh3DRotateSystem {
     this._originalSetOriginY = this.worldInfo.SetOriginY.bind(this.worldInfo);
     this._originalSetSize = this.worldInfo.SetSize.bind(this.worldInfo);
 
-    // Override SetZElevation to intercept changes
-    this.worldInfo.SetZElevation = (value) => {
+    // Override SetZ to intercept changes
+    this.worldInfo.SetZ = (value) => {
       // Don't update if this is our internal mesh offset update
       if (!this._updatingMeshOffset) {
         // Calculate the offset being applied and apply it to originalZElevation
@@ -59,7 +57,7 @@ class Mesh3DRotateSystem {
         this._originalZElevation += offset;
         this.updateRotation();
       } else {
-        this._originalSetZElevation(value);
+        this._originalSetZ(value);
       }
     };
 
@@ -97,7 +95,7 @@ class Mesh3DRotateSystem {
 
   restoreMethodOverrides() {
     // Restore original methods
-    this.worldInfo.SetZElevation = this._originalSetZElevation;
+    this.worldInfo.SetZ = this._originalSetZ;
     this.worldInfo.SetWidth = this._originalSetWidth;
     this.worldInfo.SetHeight = this._originalSetHeight;
     this.worldInfo.SetAngle = this._originalSetAngle;
@@ -106,7 +104,7 @@ class Mesh3DRotateSystem {
     this.worldInfo.SetSize = this._originalSetSize;
 
     // Set final Z elevation to original value
-    this._originalSetZElevation(this._originalZElevation);
+    this._originalSetZ(this._originalZElevation);
   }
 
   createMesh(width = 2, height = 2) {
@@ -209,7 +207,7 @@ class Mesh3DRotateSystem {
 
     // Update actual instance Z elevation
     this._updatingMeshOffset = true;
-    this._originalSetZElevation(this._originalZElevation + this._meshZOffset);
+    this._originalSetZ(this._originalZElevation + this._meshZOffset);
     this._updatingMeshOffset = false;
 
     // Apply mesh points
