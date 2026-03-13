@@ -1,0 +1,7 @@
+{
+  "1.0.1.0": {
+    "added": "",
+    "changed": "",
+    "fixed": "Removed dependency on global runtime by using small hack"
+  }
+}
