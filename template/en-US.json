@@ -58,11 +58,7 @@
             "params": {
               "enabled": {
                 "name": "Enabled",
-                "desc": "Whether to automatically update the mesh on geometry changes",
-                "items": {
-                  "enabled": "Enabled",
-                  "disabled": "Disabled"
-                }
+                "desc": "Whether to automatically update the mesh on geometry changes"
               }
             }
           },

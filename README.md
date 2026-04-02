@@ -1,14 +1,16 @@
 <img src="./src/icon.svg" width="100" /><br>
 # Mesh 3D Rotate Enhanced
 <i>Enhanced 3D mesh rotation system with direct WorldInfo override</i> <br>
-### Version 1.0.1.1
+### Version 1.1.0.0
 
-[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/skymen/meshRotate2/releases/download/mesh3d_rotate_enhanced-1.0.1.1.c3addon/mesh3d_rotate_enhanced-1.0.1.1.c3addon)
+[<img src="https://placehold.co/200x50/4493f8/FFF?text=Download&font=montserrat" width="200"/>](https://github.com/skymen/meshRotate2/releases/download/mesh3d_rotate_enhanced-1.1.0.0.c3addon/mesh3d_rotate_enhanced-1.1.0.0.c3addon)
 <br>
 <sub> [See all releases](https://github.com/skymen/meshRotate2/releases) </sub> <br>
 
-#### What's New in 1.0.1.1
-- **Fixed:** Updated GetZElevation and SetZElevation calls to use new GetZ and SetZ
+#### What's New in 1.1.0.0
+- **Added:** - Auto update mesh boolean from width, height and angle
+- **Changed:** - Removed the hack since mesh points can now have a negative Z index
+- **Changed:** - Removed the overrides on width, height and angle and replaced them with a non hacky detection method
 
 <sub>[View full changelog](#changelog)</sub>
 
@@ -62,7 +64,7 @@ npm run dev
 | Action | Description | Params
 | --- | --- | --- |
 | Force Update Mesh | Manually recalculate the mesh rotation. Useful when Auto Update Mesh is disabled. |  |
-| Set Auto Update Mesh | Enable or disable automatic mesh recalculation when the object's geometry changes | Enabled             *(combo)* <br> |
+| Set Auto Update Mesh | Enable or disable automatic mesh recalculation when the object's geometry changes | Enabled             *(boolean)* <br> |
 | Set Origin & Update Mesh | Set the object's origin point (0-1 range), then recalculate the mesh. Useful when Auto Update Mesh is disabled. | Origin X             *(number)* <br>Origin Y             *(number)* <br> |
 | Set Size & Update Mesh | Set the object's width and height, then recalculate the mesh. Useful when Auto Update Mesh is disabled. | Width             *(number)* <br>Height             *(number)* <br> |
 | Set Mesh Size | Set the number of mesh points for the object | Width             *(number)* <br>Height             *(number)* <br> |
@@ -98,6 +100,11 @@ npm run dev
 
 ---
 ## Changelog
+
+**1.1.0.0**
+- **Added:** - Auto update mesh boolean from width, height and angle
+- **Changed:** - Removed the hack since mesh points can now have a negative Z index
+- **Changed:** - Removed the overrides on width, height and angle and replaced them with a non hacky detection method
 
 **1.0.1.1**
 - **Fixed:** Updated GetZElevation and SetZElevation calls to use new GetZ and SetZ

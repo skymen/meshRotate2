@@ -347,14 +347,13 @@ action(
         id: "enabled",
         name: "Enabled",
         desc: "Whether to automatically update the mesh on geometry changes",
-        type: "combo",
-        initialValue: "enabled",
-        items: [{ enabled: "Enabled" }, { disabled: "Disabled" }],
+        type: "boolean",
+        initialValue: "true",
       },
     ],
   },
   function (enabled) {
-    this.autoUpdateMesh = enabled === 0;
+    this.autoUpdateMesh = enabled;
   },
 );
 

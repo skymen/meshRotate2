@@ -464,10 +464,13 @@ export default function (parentClass) {
       this._setTicking2(enabled);
     }
 
+    _tick2() {
+      this._mesh3DRotation?.checkForChanges();
+    }
+
     _setupMeshRotation() {
-      this._autoUpdateMeshValue = this.properties[7] !== undefined
-        ? !!this.properties[7]
-        : true;
+      this._autoUpdateMeshValue =
+        this.properties[7] !== undefined ? !!this.properties[7] : true;
       setupMesh3DRotation(this.instance, {
         rotationX: this.properties[0] || 0,
         rotationY: this.properties[1] || 0,
@@ -483,10 +486,6 @@ export default function (parentClass) {
     _postCreate() {
       this._setupMeshRotation();
       this.autoUpdateMesh = this._autoUpdateMeshValue;
-    }
-
-    _tick2() {
-      this._mesh3DRotation.checkForChanges();
     }
 
     _trigger(method) {

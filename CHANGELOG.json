@@ -8,5 +8,10 @@
     "added": "",
     "changed": "",
     "fixed": "Updated GetZElevation and SetZElevation calls to use new GetZ and SetZ"
+  },
+  "1.1.0.0": {
+    "added": "- Auto update mesh boolean from width, height and angle",
+    "changed": "- Removed the hack since mesh points can now have a negative Z index\n- Removed the overrides on width, height and angle and replaced them with a non hacky detection method",
+    "fixed": ""
   }
 }
