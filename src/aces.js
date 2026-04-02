@@ -264,6 +264,153 @@ action(
   },
 );
 
+action(
+  category,
+  "SetInstanceSize",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Set Size & Update Mesh",
+    displayText: "{my}: Set size to {0}x{1} and update mesh",
+    description:
+      "Set the object's width and height, then recalculate the mesh. Useful when Auto Update Mesh is disabled.",
+    params: [
+      {
+        id: "width",
+        name: "Width",
+        desc: "Object width in pixels",
+        type: "number",
+        initialValue: "100",
+      },
+      {
+        id: "height",
+        name: "Height",
+        desc: "Object height in pixels",
+        type: "number",
+        initialValue: "100",
+      },
+    ],
+  },
+  function (width, height) {
+    this.instance.width = width;
+    this.instance.height = height;
+    if (this._mesh3DRotation) {
+      this._mesh3DRotation._cachedWidth = width;
+      this._mesh3DRotation._cachedHeight = height;
+      this._mesh3DRotation.updateRotation();
+    }
+  },
+);
+
+action(
+  category,
+  "SetInstanceOrigin",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Set Origin & Update Mesh",
+    displayText: "{my}: Set origin to ({0}, {1}) and update mesh",
+    description:
+      "Set the object's origin point (0-1 range), then recalculate the mesh. Useful when Auto Update Mesh is disabled.",
+    params: [
+      {
+        id: "originX",
+        name: "Origin X",
+        desc: "Origin X (0 = left, 1 = right)",
+        type: "number",
+        initialValue: "0.5",
+      },
+      {
+        id: "originY",
+        name: "Origin Y",
+        desc: "Origin Y (0 = top, 1 = bottom)",
+        type: "number",
+        initialValue: "0.5",
+      },
+    ],
+  },
+  function (originX, originY) {
+    this.instance.originX = originX;
+    this.instance.originY = originY;
+    if (this._mesh3DRotation) {
+      this._mesh3DRotation._cachedOriginX = originX;
+      this._mesh3DRotation._cachedOriginY = originY;
+      this._mesh3DRotation.updateRotation();
+    }
+  },
+);
+
+action(
+  category,
+  "SetAutoUpdateMesh",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Set Auto Update Mesh",
+    displayText: "{my}: Set auto update mesh to {0}",
+    description:
+      "Enable or disable automatic mesh recalculation when the object's geometry changes",
+    params: [
+      {
+        id: "enabled",
+        name: "Enabled",
+        desc: "Whether to automatically update the mesh on geometry changes",
+        type: "combo",
+        initialValue: "enabled",
+        items: [{ enabled: "Enabled" }, { disabled: "Disabled" }],
+      },
+    ],
+  },
+  function (enabled) {
+    this._autoUpdateMesh = enabled === 0;
+  },
+);
+
+action(
+  category,
+  "ForceUpdateMesh",
+  {
+    highlight: false,
+    deprecated: false,
+    isAsync: false,
+    listName: "Force Update Mesh",
+    displayText: "{my}: Force update mesh",
+    description:
+      "Manually recalculate the mesh rotation. Useful when Auto Update Mesh is disabled.",
+    params: [],
+  },
+  function () {
+    if (this._mesh3DRotation) {
+      this._mesh3DRotation.syncCache();
+      this._mesh3DRotation.updateRotation();
+    }
+  },
+);
+
+// Conditions
+
+condition(
+  category,
+  "IsAutoUpdateMesh",
+  {
+    highlight: false,
+    deprecated: false,
+    isTrigger: false,
+    isInvertible: true,
+    isCompatibleWithTriggers: true,
+    listName: "Is Auto Update Mesh enabled",
+    displayText: "{my}: Auto update mesh is enabled",
+    description: "True if auto update mesh is currently enabled",
+    params: [],
+  },
+  function () {
+    return this._autoUpdateMesh;
+  },
+);
+
 // Expressions
 expression(
   category,

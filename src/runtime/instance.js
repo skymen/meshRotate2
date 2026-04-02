@@ -3,7 +3,7 @@ import AddonTypeMap from "../../template/addonTypeMap.js";
 
 // Improved 3D Mesh Rotation System
 class Mesh3DRotateSystem {
-  constructor(instance, globalRuntime) {
+  constructor(instance) {
     this.instance = instance;
     this.rotationX = 0;
     this.rotationY = 0;
@@ -13,13 +13,12 @@ class Mesh3DRotateSystem {
     this.rotationZExtra = 0;
     this.lastForward = [0, 0, 1];
 
-    // Get the WorldInfo object
-    this.worldInfo = globalRuntime
-      .GetInstanceByUID(this.instance.uid)
-      .GetWorldInfo();
-
-    // Override WorldInfo methods to trigger rotation updates on geometry changes
-    this.setupMethodOverrides();
+    // Cached instance geometry - read once, then only update on change
+    this._cachedWidth = instance.width;
+    this._cachedHeight = instance.height;
+    this._cachedAngle = instance.angle;
+    this._cachedOriginX = instance.originX;
+    this._cachedOriginY = instance.originY;
 
     // Create 2x2 mesh by default
     this.createMesh(2, 2);
@@ -33,55 +32,38 @@ class Mesh3DRotateSystem {
     this.instance.angleDegrees = value;
   }
 
-  setupMethodOverrides() {
-    // Store original methods
-    this._originalSetWidth = this.worldInfo.SetWidth.bind(this.worldInfo);
-    this._originalSetHeight = this.worldInfo.SetHeight.bind(this.worldInfo);
-    this._originalSetAngle = this.worldInfo.SetAngle.bind(this.worldInfo);
-    this._originalSetOriginX = this.worldInfo.SetOriginX.bind(this.worldInfo);
-    this._originalSetOriginY = this.worldInfo.SetOriginY.bind(this.worldInfo);
-    this._originalSetSize = this.worldInfo.SetSize.bind(this.worldInfo);
-
-    // Override methods to trigger rotation updates on geometry changes
-    this.worldInfo.SetWidth = (value) => {
-      this._originalSetWidth(value);
+  // Check if instance geometry changed since last update
+  checkForChanges() {
+    const inst = this.instance;
+    const w = inst.width;
+    const h = inst.height;
+    const a = inst.angle;
+    const ox = inst.originX;
+    const oy = inst.originY;
+    if (
+      w !== this._cachedWidth ||
+      h !== this._cachedHeight ||
+      a !== this._cachedAngle ||
+      ox !== this._cachedOriginX ||
+      oy !== this._cachedOriginY
+    ) {
+      this._cachedWidth = w;
+      this._cachedHeight = h;
+      this._cachedAngle = a;
+      this._cachedOriginX = ox;
+      this._cachedOriginY = oy;
       this.updateRotation();
-    };
-
-    this.worldInfo.SetHeight = (value) => {
-      this._originalSetHeight(value);
-      this.updateRotation();
-    };
-
-    this.worldInfo.SetAngle = (value) => {
-      this._originalSetAngle(value);
-      this.updateRotation();
-    };
-
-    this.worldInfo.SetOriginX = (value) => {
-      this._originalSetOriginX(value);
-      this.updateRotation();
-    };
-
-    this.worldInfo.SetOriginY = (value) => {
-      this._originalSetOriginY(value);
-      this.updateRotation();
-    };
-
-    this.worldInfo.SetSize = (width, height) => {
-      this._originalSetSize(width, height);
-      this.updateRotation();
-    };
+    }
   }
 
-  restoreMethodOverrides() {
-    // Restore original methods
-    this.worldInfo.SetWidth = this._originalSetWidth;
-    this.worldInfo.SetHeight = this._originalSetHeight;
-    this.worldInfo.SetAngle = this._originalSetAngle;
-    this.worldInfo.SetOriginX = this._originalSetOriginX;
-    this.worldInfo.SetOriginY = this._originalSetOriginY;
-    this.worldInfo.SetSize = this._originalSetSize;
+  // Update cached geometry from instance (call after external changes)
+  syncCache() {
+    const inst = this.instance;
+    this._cachedWidth = inst.width;
+    this._cachedHeight = inst.height;
+    this._cachedAngle = inst.angle;
+    this._cachedOriginX = inst.originX;
+    this._cachedOriginY = inst.originY;
   }
 
   createMesh(width = 2, height = 2) {
@@ -93,7 +75,6 @@ class Mesh3DRotateSystem {
 
   releaseMesh() {
     this.instance.releaseMesh();
-    this.restoreMethodOverrides();
   }
 
   setRotation(x, y, z) {
@@ -127,12 +108,13 @@ class Mesh3DRotateSystem {
 
     const [meshW, meshH] = this.instance.getMeshSize();
 
-    // Get object dimensions and origin
-    const originX = this.worldInfo.GetOriginX();
-    const originY = this.worldInfo.GetOriginY();
-    const width = this.worldInfo.GetWidth() * this.scaleX;
-    const height = this.worldInfo.GetHeight() * this.scaleY;
-
+    // Use cached geometry values - avoids slow instance property reads
+    const originX = this._cachedOriginX;
+    const originY = this._cachedOriginY;
+    const cachedWidth = this._cachedWidth;
+    const cachedHeight = this._cachedHeight;
+    const width = cachedWidth * this.scaleX;
+    const height = cachedHeight * this.scaleY;
     // Calculate corners in world space relative to origin
     const corners = [
       [-originX * width, -originY * height, 0], // Top-left
@@ -177,10 +159,8 @@ class Mesh3DRotateSystem {
 
           // Convert back to normalized coordinates for mesh point positioning
           // Use original dimensions (not scaled) since mesh points are normalized to actual object size
-          const originalWidth = this.worldInfo.GetWidth();
-          const originalHeight = this.worldInfo.GetHeight();
-          const normalizedX = (x + originX * width) / originalWidth;
-          const normalizedY = (y + originY * height) / originalHeight;
+          const normalizedX = (x + originX * width) / cachedWidth;
+          const normalizedY = (y + originY * height) / cachedHeight;
 
           this.instance.setMeshPoint(col, row, {
             mode: "absolute",
@@ -353,13 +333,13 @@ class Mesh3DRotateSystem {
  * @param {Object} options - Optional configuration
  * @returns {Mesh3DRotateSystem} The rotation system for further control
  */
-function setupMesh3DRotation(instance, globalRuntime, options = {}) {
+function setupMesh3DRotation(instance, options = {}) {
   // Don't setup twice
   if (instance._mesh3DRotation) {
     return instance._mesh3DRotation;
   }
 
-  const rotationSystem = new Mesh3DRotateSystem(instance, globalRuntime);
+  const rotationSystem = new Mesh3DRotateSystem(instance);
 
   // Store reference on the instance
   instance._mesh3DRotation = rotationSystem;
@@ -467,27 +447,19 @@ function setupMesh3DRotation(instance, globalRuntime, options = {}) {
 }
 
 export default function (parentClass) {
-  let globalRuntime = null;
-  if (typeof self !== "undefined" && self.C3?.Plugins?.Sprite?.Instance) {
-    self.C3.Plugins.Sprite.Instance = class SpriteInstance extends (
-      self.C3.Plugins.Sprite.Instance
-    ) {
-      constructor(...args) {
-        super(...args);
-        globalRuntime = this._runtime;
-      }
-    };
-  }
-
   return class extends parentClass {
     constructor() {
       super();
       this.properties = this._getInitProperties() ?? [];
       this._mesh3DRotation = null;
+      this._autoUpdateMesh = true;
     }
 
     _setupMeshRotation() {
-      setupMesh3DRotation(this.instance, globalRuntime, {
+      this._autoUpdateMesh = this.properties[7] !== undefined
+        ? !!this.properties[7]
+        : true;
+      setupMesh3DRotation(this.instance, {
         rotationX: this.properties[0] || 0,
         rotationY: this.properties[1] || 0,
         rotationZ: this.properties[2] || 0,
@@ -501,6 +473,12 @@ export default function (parentClass) {
 
     _postCreate() {
       this._setupMeshRotation();
+    }
+
+    _tick2() {
+      if (this._autoUpdateMesh && this._mesh3DRotation) {
+        this._mesh3DRotation.checkForChanges();
+      }
     }
 
     _trigger(method) {
@@ -566,6 +544,7 @@ export default function (parentClass) {
         rotationZExtra: this._mesh3DRotation
           ? this._mesh3DRotation.getRotationZExtra()
           : 0,
+        autoUpdateMesh: this._autoUpdateMesh,
       };
     }
 
@@ -580,6 +559,9 @@ export default function (parentClass) {
         this._mesh3DRotation.setScale(o.scaleX || 1, o.scaleY || 1);
         this._mesh3DRotation.setOffset(o.offset || 0);
         this._mesh3DRotation.setRotationZExtra(o.rotationZExtra || 0);
+        this._autoUpdateMesh = o.autoUpdateMesh !== undefined
+          ? o.autoUpdateMesh
+          : true;
       }
     }
   };

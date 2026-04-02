@@ -54,12 +54,17 @@ npm run dev
 | Scale Y | Y-axis scale multiplier | float |
 | Offset | Offset in the direction of rotation normal | float |
 | Rotation Z Extra | Additional Z-axis rotation applied first (before main rotations) | float |
+| Auto Update Mesh | Automatically recalculate the mesh when the object's size, angle, or origin changes | check |
 
 
 ---
 ## Actions
 | Action | Description | Params
 | --- | --- | --- |
+| Force Update Mesh | Manually recalculate the mesh rotation. Useful when Auto Update Mesh is disabled. |  |
+| Set Auto Update Mesh | Enable or disable automatic mesh recalculation when the object's geometry changes | Enabled             *(combo)* <br> |
+| Set Origin & Update Mesh | Set the object's origin point (0-1 range), then recalculate the mesh. Useful when Auto Update Mesh is disabled. | Origin X             *(number)* <br>Origin Y             *(number)* <br> |
+| Set Size & Update Mesh | Set the object's width and height, then recalculate the mesh. Useful when Auto Update Mesh is disabled. | Width             *(number)* <br>Height             *(number)* <br> |
 | Set Mesh Size | Set the number of mesh points for the object | Width             *(number)* <br>Height             *(number)* <br> |
 | Set Offset | Set the offset in the direction of rotation normal | Offset             *(number)* <br> |
 | Set Original Z Elevation | (Deprecated) No longer needed - use the built-in Z elevation instead. Previously required to work around negative mesh Z limitations. | Z Elevation             *(number)* <br> |
@@ -73,6 +78,7 @@ npm run dev
 ## Conditions
 | Condition | Description | Params
 | --- | --- | --- |
+| Is Auto Update Mesh enabled | True if auto update mesh is currently enabled |  |
 
 
 ---
@@ -81,7 +87,7 @@ npm run dev
 | --- | --- | --- | --- |
 | MeshZOffset | (Deprecated) No longer needed - negative mesh Z values are now supported. Always returns 0. | number |  | 
 | Offset | Get the current offset value | number |  | 
-| OriginalZElevation | (Deprecated) No longer needed - use the built-in Z elevation expression instead. Returns the instance's Z elevation. | number |  | 
+| OriginalZElevation | (Deprecated) No longer needed - use the built-in Z expression instead. Returns the instance's Z elevation. | number |  | 
 | RotationX | Get the current X rotation in degrees | number |  | 
 | RotationY | Get the current Y rotation in degrees | number |  | 
 | RotationZ | Get the current Z rotation in degrees | number |  | 

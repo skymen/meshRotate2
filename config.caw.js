@@ -151,4 +151,13 @@ export const properties = [
     name: "Rotation Z Extra",
     desc: "Additional Z-axis rotation applied first (before main rotations)",
   },
+  {
+    type: PROPERTY_TYPE.CHECK,
+    id: "auto_update_mesh",
+    options: {
+      initialValue: true,
+    },
+    name: "Auto Update Mesh",
+    desc: "Automatically recalculate the mesh when the object's size, angle, or origin changes",
+  },
 ];

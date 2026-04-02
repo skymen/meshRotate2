@@ -38,9 +38,64 @@
           "rotation_z_extra": {
             "name": "Rotation Z Extra",
             "desc": "Additional Z-axis rotation applied first (before main rotations)"
+          },
+          "auto_update_mesh": {
+            "name": "Auto Update Mesh",
+            "desc": "Automatically recalculate the mesh when the object's size, angle, or origin changes"
           }
         },
         "actions": {
+          "ForceUpdateMesh": {
+            "list-name": "Force Update Mesh",
+            "display-text": "{my}: Force update mesh",
+            "description": "Manually recalculate the mesh rotation. Useful when Auto Update Mesh is disabled.",
+            "params": {}
+          },
+          "SetAutoUpdateMesh": {
+            "list-name": "Set Auto Update Mesh",
+            "display-text": "{my}: Set auto update mesh to {0}",
+            "description": "Enable or disable automatic mesh recalculation when the object's geometry changes",
+            "params": {
+              "enabled": {
+                "name": "Enabled",
+                "desc": "Whether to automatically update the mesh on geometry changes",
+                "items": {
+                  "enabled": "Enabled",
+                  "disabled": "Disabled"
+                }
+              }
+            }
+          },
+          "SetInstanceOrigin": {
+            "list-name": "Set Origin & Update Mesh",
+            "display-text": "{my}: Set origin to ({0}, {1}) and update mesh",
+            "description": "Set the object's origin point (0-1 range), then recalculate the mesh. Useful when Auto Update Mesh is disabled.",
+            "params": {
+              "originX": {
+                "name": "Origin X",
+                "desc": "Origin X (0 = left, 1 = right)"
+              },
+              "originY": {
+                "name": "Origin Y",
+                "desc": "Origin Y (0 = top, 1 = bottom)"
+              }
+            }
+          },
+          "SetInstanceSize": {
+            "list-name": "Set Size & Update Mesh",
+            "display-text": "{my}: Set size to {0}x{1} and update mesh",
+            "description": "Set the object's width and height, then recalculate the mesh. Useful when Auto Update Mesh is disabled.",
+            "params": {
+              "width": {
+                "name": "Width",
+                "desc": "Object width in pixels"
+              },
+              "height": {
+                "name": "Height",
+                "desc": "Object height in pixels"
+              }
+            }
+          },
           "SetMeshSize": {
             "list-name": "Set Mesh Size",
             "display-text": "{my}: Set mesh size to {0}x{1}",
@@ -155,7 +210,14 @@
             }
           }
         },
-        "conditions": {},
+        "conditions": {
+          "IsAutoUpdateMesh": {
+            "list-name": "Is Auto Update Mesh enabled",
+            "display-text": "{my}: Auto update mesh is enabled",
+            "description": "True if auto update mesh is currently enabled",
+            "params": {}
+          }
+        },
         "expressions": {
           "MeshZOffset": {
             "translated-name": "MeshZOffset",
@@ -169,7 +231,7 @@
           },
           "OriginalZElevation": {
             "translated-name": "OriginalZElevation",
-            "description": "(Deprecated) No longer needed - use the built-in Z elevation expression instead. Returns the instance's Z elevation.",
+            "description": "(Deprecated) No longer needed - use the built-in Z expression instead. Returns the instance's Z elevation.",
             "params": {}
           },
           "RotationX": {
