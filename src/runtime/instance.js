@@ -452,11 +452,20 @@ export default function (parentClass) {
       super();
       this.properties = this._getInitProperties() ?? [];
       this._mesh3DRotation = null;
-      this._autoUpdateMesh = true;
+      this._autoUpdateMeshValue = true;
+    }
+
+    get autoUpdateMesh() {
+      return this._autoUpdateMeshValue;
+    }
+
+    set autoUpdateMesh(enabled) {
+      this._autoUpdateMeshValue = enabled;
+      this._setTicking2(enabled);
     }
 
     _setupMeshRotation() {
-      this._autoUpdateMesh = this.properties[7] !== undefined
+      this._autoUpdateMeshValue = this.properties[7] !== undefined
         ? !!this.properties[7]
         : true;
       setupMesh3DRotation(this.instance, {
@@ -471,14 +480,9 @@ export default function (parentClass) {
       this._mesh3DRotation = this.instance._mesh3DRotation;
     }
 
-    _setAutoUpdateMesh(enabled) {
-      this._autoUpdateMesh = enabled;
-      this._setTicking2(enabled);
-    }
-
     _postCreate() {
       this._setupMeshRotation();
-      this._setAutoUpdateMesh(this._autoUpdateMesh);
+      this.autoUpdateMesh = this._autoUpdateMeshValue;
     }
 
     _tick2() {
@@ -548,7 +552,7 @@ export default function (parentClass) {
         rotationZExtra: this._mesh3DRotation
           ? this._mesh3DRotation.getRotationZExtra()
           : 0,
-        autoUpdateMesh: this._autoUpdateMesh,
+        autoUpdateMesh: this.autoUpdateMesh,
       };
     }
 
@@ -563,9 +567,8 @@ export default function (parentClass) {
         this._mesh3DRotation.setScale(o.scaleX || 1, o.scaleY || 1);
         this._mesh3DRotation.setOffset(o.offset || 0);
         this._mesh3DRotation.setRotationZExtra(o.rotationZExtra || 0);
-        this._setAutoUpdateMesh(
-          o.autoUpdateMesh !== undefined ? o.autoUpdateMesh : true,
-        );
+        this.autoUpdateMesh =
+          o.autoUpdateMesh !== undefined ? o.autoUpdateMesh : true;
       }
     }
   };

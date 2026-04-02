@@ -365,7 +365,7 @@ action(
     ],
   },
   function (enabled) {
-    this._setAutoUpdateMesh(enabled === 0);
+    this.autoUpdateMesh = enabled === 0;
   },
 );
 
@@ -407,7 +407,7 @@ condition(
     params: [],
   },
   function () {
-    return this._autoUpdateMesh;
+    return this.autoUpdateMesh;
   },
 );
 
