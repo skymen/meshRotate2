@@ -1,7 +1,7 @@
 import { id, addonType } from "../../config.caw.js";
 import AddonTypeMap from "../../template/addonTypeMap.js";
 
-// Improved 3D Mesh Rotation System - Direct C3.WorldInfo Override
+// Improved 3D Mesh Rotation System
 class Mesh3DRotateSystem {
   constructor(instance, globalRuntime) {
     this.instance = instance;
@@ -18,11 +18,7 @@ class Mesh3DRotateSystem {
       .GetInstanceByUID(this.instance.uid)
       .GetWorldInfo();
 
-    // Store original Z elevation and create custom property
-    this._originalZElevation = this.worldInfo.GetZ();
-    this._meshZOffset = 0;
-
-    // Override WorldInfo methods
+    // Override WorldInfo methods to trigger rotation updates on geometry changes
     this.setupMethodOverrides();
 
     // Create 2x2 mesh by default
@@ -39,7 +35,6 @@ class Mesh3DRotateSystem {
 
   setupMethodOverrides() {
     // Store original methods
-    this._originalSetZ = this.worldInfo.SetZ.bind(this.worldInfo);
     this._originalSetWidth = this.worldInfo.SetWidth.bind(this.worldInfo);
     this._originalSetHeight = this.worldInfo.SetHeight.bind(this.worldInfo);
     this._originalSetAngle = this.worldInfo.SetAngle.bind(this.worldInfo);
@@ -47,21 +42,7 @@ class Mesh3DRotateSystem {
     this._originalSetOriginY = this.worldInfo.SetOriginY.bind(this.worldInfo);
     this._originalSetSize = this.worldInfo.SetSize.bind(this.worldInfo);
 
-    // Override SetZ to intercept changes
-    this.worldInfo.SetZ = (value) => {
-      // Don't update if this is our internal mesh offset update
-      if (!this._updatingMeshOffset) {
-        // Calculate the offset being applied and apply it to originalZElevation
-        const currentTotalZ = this._originalZElevation + this._meshZOffset;
-        const offset = value - currentTotalZ;
-        this._originalZElevation += offset;
-        this.updateRotation();
-      } else {
-        this._originalSetZ(value);
-      }
-    };
-
-    // Override other methods to trigger rotation updates
+    // Override methods to trigger rotation updates on geometry changes
     this.worldInfo.SetWidth = (value) => {
       this._originalSetWidth(value);
       this.updateRotation();
@@ -95,16 +76,12 @@ class Mesh3DRotateSystem {
 
   restoreMethodOverrides() {
     // Restore original methods
-    this.worldInfo.SetZ = this._originalSetZ;
     this.worldInfo.SetWidth = this._originalSetWidth;
     this.worldInfo.SetHeight = this._originalSetHeight;
     this.worldInfo.SetAngle = this._originalSetAngle;
     this.worldInfo.SetOriginX = this._originalSetOriginX;
     this.worldInfo.SetOriginY = this._originalSetOriginY;
     this.worldInfo.SetSize = this._originalSetSize;
-
-    // Set final Z elevation to original value
-    this._originalSetZ(this._originalZElevation);
   }
 
   createMesh(width = 2, height = 2) {
@@ -143,15 +120,6 @@ class Mesh3DRotateSystem {
     this.updateRotation();
   }
 
-  setOriginalZElevation(value) {
-    this._originalZElevation = value;
-    this.updateRotation();
-  }
-
-  getOriginalZElevation() {
-    return this._originalZElevation;
-  }
-
   updateRotation() {
     if (!this.instance.getMeshSize || this.instance.getMeshSize()[0] === 0) {
       return;
@@ -173,7 +141,6 @@ class Mesh3DRotateSystem {
       [(1 - originX) * width, (1 - originY) * height, 0], // Bottom-right
     ];
 
-    let minZ = 0;
     const rotatedCorners = [];
 
     // Apply rotations with extra Z rotation first, then XYZ order
@@ -199,16 +166,7 @@ class Mesh3DRotateSystem {
       point = this.rotatePoint(point, 0, 0, -this.rotationZ);
 
       rotatedCorners.push(point);
-      minZ = Math.min(minZ, point[2]);
     }
-
-    // Calculate Z offset to prevent negative Z (in world space)
-    this._meshZOffset = minZ;
-
-    // Update actual instance Z elevation
-    this._updatingMeshOffset = true;
-    this._originalSetZ(this._originalZElevation + this._meshZOffset);
-    this._updatingMeshOffset = false;
 
     // Apply mesh points
     let cornerIndex = 0;
@@ -228,7 +186,7 @@ class Mesh3DRotateSystem {
             mode: "absolute",
             x: normalizedX,
             y: normalizedY,
-            zElevation: z - this._meshZOffset, // World space Z elevation
+            zElevation: z,
           });
 
           cornerIndex++;
@@ -387,9 +345,6 @@ class Mesh3DRotateSystem {
   getRotationZExtra() {
     return this.rotationZExtra;
   }
-  getMeshZOffset() {
-    return this._meshZOffset;
-  }
 }
 
 /**
@@ -467,18 +422,6 @@ function setupMesh3DRotation(instance, globalRuntime, options = {}) {
     return this._mesh3DRotation.getRotationZExtra();
   };
 
-  // Add originalZElevation getter/setter to the instance
-  Object.defineProperty(instance, "originalZElevation", {
-    get() {
-      return this._mesh3DRotation.getOriginalZElevation();
-    },
-    set(value) {
-      this._mesh3DRotation.setOriginalZElevation(value);
-    },
-    configurable: true,
-    enumerable: true,
-  });
-
   instance.releaseMesh3D = function () {
     if (this._mesh3DRotation) {
       this._mesh3DRotation.releaseMesh();
@@ -492,7 +435,6 @@ function setupMesh3DRotation(instance, globalRuntime, options = {}) {
       delete this.getOffset3D;
       delete this.setRotationZExtra3D;
       delete this.getRotationZExtra3D;
-      delete this.originalZElevation;
       delete this.releaseMesh3D;
     }
   };

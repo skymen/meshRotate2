@@ -70,7 +70,7 @@
           "SetOriginalZElevation": {
             "list-name": "Set Original Z Elevation",
             "display-text": "{my}: Set original Z elevation to {0}",
-            "description": "Set the original Z elevation without affecting rotation",
+            "description": "(Deprecated) No longer needed - use the built-in Z elevation instead. Previously required to work around negative mesh Z limitations.",
             "params": {
               "zElevation": {
                 "name": "Z Elevation",
@@ -159,7 +159,7 @@
         "expressions": {
           "MeshZOffset": {
             "translated-name": "MeshZOffset",
-            "description": "Get the current mesh Z offset",
+            "description": "(Deprecated) No longer needed - negative mesh Z values are now supported. Always returns 0.",
             "params": {}
           },
           "Offset": {
@@ -169,7 +169,7 @@
           },
           "OriginalZElevation": {
             "translated-name": "OriginalZElevation",
-            "description": "Get the original Z elevation value",
+            "description": "(Deprecated) No longer needed - use the built-in Z elevation expression instead. Returns the instance's Z elevation.",
             "params": {}
           },
           "RotationX": {

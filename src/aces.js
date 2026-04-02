@@ -41,7 +41,7 @@ action(
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setRotation(rotationX, rotationY, rotationZ);
     }
-  }
+  },
 );
 
 action(
@@ -109,10 +109,10 @@ action(
         upZ,
         forwardX,
         forwardY,
-        forwardZ
+        forwardZ,
       );
     }
-  }
+  },
 );
 
 action(
@@ -146,7 +146,7 @@ action(
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setScale(scaleX, scaleY);
     }
-  }
+  },
 );
 
 action(
@@ -180,7 +180,7 @@ action(
     if (this._mesh3DRotation) {
       this._mesh3DRotation.createMesh(width, height);
     }
-  }
+  },
 );
 
 action(
@@ -188,11 +188,12 @@ action(
   "SetOriginalZElevation",
   {
     highlight: false,
-    deprecated: false,
+    deprecated: true,
     isAsync: false,
     listName: "Set Original Z Elevation",
     displayText: "{my}: Set original Z elevation to {0}",
-    description: "Set the original Z elevation without affecting rotation",
+    description:
+      "(Deprecated) No longer needed - use the built-in Z elevation instead. Previously required to work around negative mesh Z limitations.",
     params: [
       {
         id: "zElevation",
@@ -204,10 +205,9 @@ action(
     ],
   },
   function (zElevation) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setOriginalZElevation(zElevation);
-    }
-  }
+    // Deprecated: just set the instance's Z elevation directly
+    this.instance.zElevation = zElevation;
+  },
 );
 
 action(
@@ -234,7 +234,7 @@ action(
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setOffset(offset);
     }
-  }
+  },
 );
 
 action(
@@ -261,7 +261,7 @@ action(
     if (this._mesh3DRotation) {
       this._mesh3DRotation.setRotationZExtra(rotationZExtra);
     }
-  }
+  },
 );
 
 // Expressions
@@ -278,7 +278,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getRotationX() : 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -294,7 +294,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getRotationY() : 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -310,7 +310,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getRotationZ() : 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -326,7 +326,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getScaleX() : 1;
   },
-  false
+  false,
 );
 
 expression(
@@ -342,7 +342,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getScaleY() : 1;
   },
-  false
+  false,
 );
 
 expression(
@@ -350,17 +350,17 @@ expression(
   "OriginalZElevation",
   {
     highlight: false,
-    deprecated: false,
+    deprecated: true,
     returnType: "number",
-    description: "Get the original Z elevation value",
+    description:
+      "(Deprecated) No longer needed - use the built-in Z expression instead. Returns the instance's Z elevation.",
     params: [],
   },
   function () {
-    return this._mesh3DRotation
-      ? this._mesh3DRotation.getOriginalZElevation()
-      : 0;
+    // Deprecated: just return the instance's Z elevation directly
+    return this.instance ? this.instance.z : 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -368,15 +368,17 @@ expression(
   "MeshZOffset",
   {
     highlight: false,
-    deprecated: false,
+    deprecated: true,
     returnType: "number",
-    description: "Get the current mesh Z offset",
+    description:
+      "(Deprecated) No longer needed - negative mesh Z values are now supported. Always returns 0.",
     params: [],
   },
   function () {
-    return this._mesh3DRotation ? this._mesh3DRotation.getMeshZOffset() : 0;
+    // Deprecated: mesh Z offset hack is no longer needed
+    return 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -392,7 +394,7 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getOffset() : 0;
   },
-  false
+  false,
 );
 
 expression(
@@ -408,5 +410,5 @@ expression(
   function () {
     return this._mesh3DRotation ? this._mesh3DRotation.getRotationZExtra() : 0;
   },
-  false
+  false,
 );
