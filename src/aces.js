@@ -38,9 +38,7 @@ action(
     ],
   },
   function (rotationX, rotationY, rotationZ) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setRotation(rotationX, rotationY, rotationZ);
-    }
+    this._mesh3DRotation?.setRotation(rotationX, rotationY, rotationZ);
   },
 );
 
@@ -102,16 +100,14 @@ action(
     ],
   },
   function (upX, upY, upZ, forwardX, forwardY, forwardZ) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setRotationFromVectors(
-        upX,
-        upY,
-        upZ,
-        forwardX,
-        forwardY,
-        forwardZ,
-      );
-    }
+    this._mesh3DRotation?.setRotationFromVectors(
+      upX,
+      upY,
+      upZ,
+      forwardX,
+      forwardY,
+      forwardZ,
+    );
   },
 );
 
@@ -143,9 +139,7 @@ action(
     ],
   },
   function (scaleX, scaleY) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setScale(scaleX, scaleY);
-    }
+    this._mesh3DRotation?.setScale(scaleX, scaleY);
   },
 );
 
@@ -177,9 +171,7 @@ action(
     ],
   },
   function (width, height) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.createMesh(width, height);
-    }
+    this._mesh3DRotation?.createMesh(width, height);
   },
 );
 
@@ -231,9 +223,7 @@ action(
     ],
   },
   function (offset) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setOffset(offset);
-    }
+    this._mesh3DRotation?.setOffset(offset);
   },
 );
 
@@ -258,9 +248,7 @@ action(
     ],
   },
   function (rotationZExtra) {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.setRotationZExtra(rotationZExtra);
-    }
+    this._mesh3DRotation?.setRotationZExtra(rotationZExtra);
   },
 );
 
@@ -383,10 +371,8 @@ action(
     params: [],
   },
   function () {
-    if (this._mesh3DRotation) {
-      this._mesh3DRotation.syncCache();
-      this._mesh3DRotation.updateRotation();
-    }
+    this._mesh3DRotation?.syncCache();
+    this._mesh3DRotation?.updateRotation();
   },
 );
 
