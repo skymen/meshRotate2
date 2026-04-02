@@ -471,14 +471,18 @@ export default function (parentClass) {
       this._mesh3DRotation = this.instance._mesh3DRotation;
     }
 
+    _setAutoUpdateMesh(enabled) {
+      this._autoUpdateMesh = enabled;
+      this._setTicking2(enabled);
+    }
+
     _postCreate() {
       this._setupMeshRotation();
+      this._setAutoUpdateMesh(this._autoUpdateMesh);
     }
 
     _tick2() {
-      if (this._autoUpdateMesh && this._mesh3DRotation) {
-        this._mesh3DRotation.checkForChanges();
-      }
+      this._mesh3DRotation.checkForChanges();
     }
 
     _trigger(method) {
@@ -559,9 +563,9 @@ export default function (parentClass) {
         this._mesh3DRotation.setScale(o.scaleX || 1, o.scaleY || 1);
         this._mesh3DRotation.setOffset(o.offset || 0);
         this._mesh3DRotation.setRotationZExtra(o.rotationZExtra || 0);
-        this._autoUpdateMesh = o.autoUpdateMesh !== undefined
-          ? o.autoUpdateMesh
-          : true;
+        this._setAutoUpdateMesh(
+          o.autoUpdateMesh !== undefined ? o.autoUpdateMesh : true,
+        );
       }
     }
   };
