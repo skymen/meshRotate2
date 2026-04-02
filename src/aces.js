@@ -200,6 +200,7 @@ action(
     // Deprecated: just set the instance's Z elevation directly
     this.instance.zElevation = zElevation;
   },
+  false,
 );
 
 action(
@@ -395,6 +396,7 @@ condition(
   function () {
     return this.autoUpdateMesh;
   },
+  false,
 );
 
 // Expressions
